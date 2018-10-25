@@ -29,6 +29,7 @@ class Color(Enum):
     WHITE = 6
     # BROWN = 7
 
+Color(Enum)
 
 class Snatch3rRobot(object):
     """ An EV3 Snatch3r Robot. """
@@ -180,7 +181,10 @@ class TouchSensor(rb.TouchSensor):
 
     def wait_until_pressed(self):
         """ Waits (doing nothing new) until the touch sensor is pressed. """
-        # TODO.
+        while self.get_value() == 0:
+            time.sleep(0.1)
+
+
 
     def wait_until_released(self):
         """ Waits (doing nothing new) until the touch sensor is released. """
@@ -205,7 +209,7 @@ class ColorSensor(rb.ColorSensor):
         """
 
         while self.get_reflected_intensity() >= reflected_light_intensity:
-            time.sleep()
+            time.sleep(0.001)
         print(self.get_reflected_intensity())
 
     def wait_until_intensity_is_greater_than(self, reflected_light_intensity):
@@ -214,7 +218,9 @@ class ColorSensor(rb.ColorSensor):
         light intensity is greater than the given value (threshold), which
         should be between 0 (no light reflected) and 100 (max light reflected).
         """
-        # TODO.
+        while self.get_reflected_intensity() <= reflected_light_intensity:
+            time.sleep(0.001)
+        print(self.get_reflected_intensity())
 
     def wait_until_color_is(self, color):
         """
@@ -222,7 +228,9 @@ class ColorSensor(rb.ColorSensor):
         of what color it sees is the given color.
         The given color must be a Color (as defined above).
         """
-        # TODO.
+        while self.get_color() != Color(color):
+            time.sleep(0.001)
+        print(self.get_color())
 
     def wait_until_color_is_one_of(self, colors):
         """

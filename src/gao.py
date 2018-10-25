@@ -8,10 +8,20 @@ import time
 
 
 def main():
-    """ Runs YOUR specific part of the project """
-    robot = rb.Snatch3rRobot
-    robot.drive_system.start_moving(30,30)
-    robot.color_sensor.wait_until_diversity_is_less_than(20)
-    robot.drive_system.stop_moving
+    class Color(Enum):
+        NO_COLOR = 0
+        BLACK = 1
+        BLUE = 2
+        GREEN = 3
+        YELLOW = 4
+        RED = 5
+        WHITE = 6
+        # BROWN = 7
 
+    """ Runs YOUR specific part of the project """
+    color = 'Black'
+    robot = rb.Snatch3rRobot()
+    for k in range(10):
+        print(Color(Enum).)
+        time.sleep(0.2)
 main()
