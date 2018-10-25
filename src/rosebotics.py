@@ -27,7 +27,7 @@ class Color(Enum):
     YELLOW = 4
     RED = 5
     WHITE = 6
-    BROWN = 7
+    # BROWN = 7
 
 
 class Snatch3rRobot(object):
@@ -203,7 +203,10 @@ class ColorSensor(rb.ColorSensor):
         light intensity is less than the given value (threshold), which should
         be between 0 (no light reflected) and 100 (maximum light reflected).
         """
-        # TODO.
+
+        while self.get_reflected_intensity() >= reflected_light_intensity:
+            time.sleep()
+        print(self.get_reflected_intensity())
 
     def wait_until_intensity_is_greater_than(self, reflected_light_intensity):
         """
