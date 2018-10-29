@@ -11,6 +11,7 @@ from ev3dev import ev3
 from enum import Enum
 import low_level_rosebotics as rb
 import time
+import math
 
 
 class StopAction(Enum):
@@ -107,12 +108,12 @@ class DriveSystem(object):
         """
         total=inches*13
         self.start_moving(duty_cycle_percent,duty_cycle_percent)
-        time.sleep(total/duty_cycle_percent)
-        self.stop_moving(stop_action.BRAKE)
+        time.sleep(total/math.fabs(duty_cycle_percent))
+        self.stop_moving(stop_action)
 
-        # TODO: Do a few experiments to determine the constant that converts
-        # TODO:   from wheel-degrees-spun to robot-inches-moved.
-        # TODO:   Assume that the conversion is linear with respect to speed.
+        # DONE: Do a few experiments to determine the constant that converts
+        # DONE:   from wheel-degrees-spun to robot-inches-moved.
+        # DONE:   Assume that the conversion is linear with respect to speed.
 
     def spin_in_place_degrees(self,
                               degrees,
@@ -124,9 +125,20 @@ class DriveSystem(object):
         where positive is clockwise and negative is counter-clockwise),
         stopping by using the given StopAction.
         """
-        # TODO: Do a few experiments to determine the constant that converts
-        # TODO:   from wheel-degrees-spun to robot-degrees-spun.
-        # TODO:   Assume that the conversion is linear with respect to speed.
+
+        total = degrees*5
+        while math.fabs(self.left_wheel.get_degrees_spun())<=total:
+            self.left_wheel.start_spinning(duty_cycle_percent)
+            self.right_wheel.start_spinning(-(duty_cycle_percent))
+            time.sleep(0.001)
+        self.left_wheel.stop_spinning(stop_action)
+        self.right_wheel.stop_spinning(stop_action)
+        self.left_wheel.reset_degrees_spun()
+        self.right_wheel.reset_degrees_spun()
+
+        # DONE: Do a few experiments to determine the constant that converts
+        # DONE:   from wheel-degrees-spun to robot-degrees-spun.
+        # DONE:   Assume that the conversion is linear with respect to speed.
     def turn_degrees(self,
                      degrees,
                      duty_cycle_percent=100,
@@ -137,9 +149,26 @@ class DriveSystem(object):
         where positive is clockwise and negative is counter-clockwise),
         stopping by using the given StopAction.
         """
-        # TODO: Do a few experiments to determine the constant that converts
-        # TODO:   from wheel-degrees-spun to robot-degrees-turned.
-        # TODO:   Assume that the conversion is linear with respect to speed.
+        total = degrees*12
+        if duty_cycle_percent <0:
+            self.right_wheel.start_spinning(-(duty_cycle_percent))
+            while self.right_wheel.get_degrees_spun()<total:
+                time.sleep(0.001)
+            self.right_wheel.stop_spinning(stop_action)
+            self.right_wheel.reset_degrees_spun()
+        else:
+            self.left_wheel.start_spinning(duty_cycle_percent)
+            while self.left_wheel.get_degrees_spun()<total:
+                time.sleep(0.001)
+            self.left_wheel.stop_spinning(stop_action)
+            self.left_wheel.reset_degrees_spun()
+
+
+
+                
+        # DONE: Do a few experiments to determine the constant that converts
+        # DONE:   from wheel-degrees-spun to robot-degrees-turned.
+        # DONE:   Assume that the conversion is linear with respect to speed.
 
 
 class ArmAndClaw(object):
