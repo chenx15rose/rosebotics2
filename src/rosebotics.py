@@ -109,7 +109,7 @@ class DriveSystem(object):
         total=inches*13
         self.start_moving(duty_cycle_percent,duty_cycle_percent)
         time.sleep(total/math.fabs(duty_cycle_percent))
-        self.stop_moving(stop_action)
+        
 
         # DONE: Do a few experiments to determine the constant that converts
         # DONE:   from wheel-degrees-spun to robot-inches-moved.
