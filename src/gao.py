@@ -8,20 +8,38 @@ import time
 
 
 def main():
-    class Color(Enum):
-        NO_COLOR = 0
-        BLACK = 1
-        BLUE = 2
-        GREEN = 3
-        YELLOW = 4
-        RED = 5
-        WHITE = 6
-        # BROWN = 7
 
     """ Runs YOUR specific part of the project """
-    color = 'Black'
     robot = rb.Snatch3rRobot()
-    for k in range(10):
-        print(Color(Enum).)
-        time.sleep(0.2)
+    #1
+    n=5
+    for k in range(n):
+        robot.drive_system.go_straight_inches(m)
+        robot.drive_system.spin_in_place_degrees((n-2)/n*180)
+    robot.drive_system.stop_moving()
+    #2
+    middle_value = 50
+    t = 0.005
+    intergral = 0
+    delta = 0
+    while True:
+        p_delta = delta
+        delta = robot.color_sensor.get_reflected_intensity() - middle_value
+        if robot.color_sensor.get_reflected_intensity() <= middle_value+5 and robot.color_sensor.get_reflected_intensity()>=middle_value-5:
+            intergral = 0
+            robot.drive_system.start_moving(60,60)
+            time.sleep(t)
+        else:
+            intergral += delta
+            speedleft = 50 - delta*0.6 + 0.03*intergral #+(delta-p_delta)*0.01
+            speedright = 50 + delta*0.6 + 0.03*intergral #+py(delta-p_delta)*0.01
+            robot.drive_system.start_moving(speedleft,speedright)
+            time.sleep(t)
+    #3
+    color = 5
+    robot = rb.Snatch3rRobot()
+    robot.drive_system.start_moving(50,50)
+    robot.color_sensor.wait_until_color_is(color)
+    robot.drive_system.stop_moving()
+    print(robot.color_sensor.get_color())
 main()

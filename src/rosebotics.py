@@ -30,7 +30,6 @@ class Color(Enum):
     WHITE = 6
     # BROWN = 7
 
-Color(Enum)
 
 class Snatch3rRobot(object):
     """ An EV3 Snatch3r Robot. """
@@ -263,7 +262,7 @@ class ColorSensor(rb.ColorSensor):
         of what color it sees is the given color.
         The given color must be a Color (as defined above).
         """
-        while self.get_color() != Color(color):
+        while self.get_color() != color:
             time.sleep(0.001)
         print(self.get_color())
 
@@ -274,7 +273,15 @@ class ColorSensor(rb.ColorSensor):
         Each item in the sequence must be a Color (as defined above).
         """
         # TODO.
-
+        while True:
+            count = 0
+            for k in range(len(colors)):
+                if self.get_color() == colors[k]:
+                    count = 1
+                    break
+            if count != 0:
+                break
+        print(self.get_color())
 
 class InfraredSensorAsProximitySensor(object):
     """ Primary author of this class:  PUT_YOUR_NAME_HERE. """
