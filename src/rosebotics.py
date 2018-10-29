@@ -109,6 +109,7 @@ class DriveSystem(object):
         self.start_moving(duty_cycle_percent,duty_cycle_percent)
         time.sleep(total/duty_cycle_percent)
         self.stop_moving(stop_action)
+        dfjhj
 
         # TODO: Do a few experiments to determine the constant that converts
         # TODO:   from wheel-degrees-spun to robot-inches-moved.
