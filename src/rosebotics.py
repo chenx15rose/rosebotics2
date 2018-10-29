@@ -187,11 +187,18 @@ class TouchSensor(rb.TouchSensor):
     def wait_until_pressed(self):
         """ Waits (doing nothing new) until the touch sensor is pressed. """
         # TODO.
-        
+        if self.get_value() == 0:
+            DriveSystem.start_moving(100,100)
+            time.sleep(1)
+
 
     def wait_until_released(self):
         """ Waits (doing nothing new) until the touch sensor is released. """
         # TODO
+        DriveSystem.start_moving(100, 100)
+        if self.get_value() == 1:
+            DriveSystem.start_moving(100,100)
+        time.sleep(1)
 
 
 class Camera(object):
