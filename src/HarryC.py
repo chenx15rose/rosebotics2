@@ -11,7 +11,7 @@ def main():
     """ Runs YOUR specific part of the project """
     test_go_straight_inches(30,-100)
     test_spin(360,-100)
-    #test_turn(180,-100)
+    test_turn(180,-100)
 
 def test_go_straight_inches(inch,speed):
     robot = rb.Snatch3rRobot()
