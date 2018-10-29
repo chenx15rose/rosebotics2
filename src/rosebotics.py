@@ -105,11 +105,10 @@ class DriveSystem(object):
         Go straight at the given speed (-100 to 100, negative is backwards)
         for the given number of inches, stopping with the given StopAction.
         """
-        total=inches*100
+        total=inches*13
         self.start_moving(duty_cycle_percent,duty_cycle_percent)
         time.sleep(total/duty_cycle_percent)
-        self.stop_moving(stop_action)
-        dfjhj
+        self.stop_moving(stop_action.BRAKE)
 
         # TODO: Do a few experiments to determine the constant that converts
         # TODO:   from wheel-degrees-spun to robot-inches-moved.
@@ -183,6 +182,7 @@ class TouchSensor(rb.TouchSensor):
 
     def __init__(self, port=ev3.INPUT_1):
         super().__init__(port)
+
 
     def wait_until_pressed(self):
         """ Waits (doing nothing new) until the touch sensor is pressed. """
