@@ -11,6 +11,7 @@ from ev3dev import ev3
 from enum import Enum
 import low_level_rosebotics as rb
 import time
+import math
 
 
 class StopAction(Enum):
@@ -27,7 +28,7 @@ class Color(Enum):
     YELLOW = 4
     RED = 5
     WHITE = 6
-    BROWN = 7
+    # BROWN = 7
 
 
 class Snatch3rRobot(object):
@@ -107,12 +108,12 @@ class DriveSystem(object):
         """
         total=inches*13
         self.start_moving(duty_cycle_percent,duty_cycle_percent)
-        time.sleep(total/duty_cycle_percent)
-        self.stop_moving(stop_action.BRAKE)
+        time.sleep(total/math.fabs(duty_cycle_percent))
+        
 
-        # TODO: Do a few experiments to determine the constant that converts
-        # TODO:   from wheel-degrees-spun to robot-inches-moved.
-        # TODO:   Assume that the conversion is linear with respect to speed.
+        # DONE: Do a few experiments to determine the constant that converts
+        # DONE:   from wheel-degrees-spun to robot-inches-moved.
+        # DONE:   Assume that the conversion is linear with respect to speed.
 
     def spin_in_place_degrees(self,
                               degrees,
@@ -124,9 +125,19 @@ class DriveSystem(object):
         where positive is clockwise and negative is counter-clockwise),
         stopping by using the given StopAction.
         """
-        # TODO: Do a few experiments to determine the constant that converts
-        # TODO:   from wheel-degrees-spun to robot-degrees-spun.
-        # TODO:   Assume that the conversion is linear with respect to speed.
+
+        total = degrees*5
+        while math.fabs(self.left_wheel.get_degrees_spun())<=total:
+            self.left_wheel.start_spinning(duty_cycle_percent)
+            self.right_wheel.start_spinning(-(duty_cycle_percent))
+        self.left_wheel.stop_spinning(stop_action)
+        self.right_wheel.stop_spinning(stop_action)
+        self.left_wheel.reset_degrees_spun()
+        self.right_wheel.reset_degrees_spun()
+
+        # DONE: Do a few experiments to determine the constant that converts
+        # DONE:   from wheel-degrees-spun to robot-degrees-spun.
+        # DONE:   Assume that the conversion is linear with respect to speed.
     def turn_degrees(self,
                      degrees,
                      duty_cycle_percent=100,
@@ -137,9 +148,26 @@ class DriveSystem(object):
         where positive is clockwise and negative is counter-clockwise),
         stopping by using the given StopAction.
         """
-        # TODO: Do a few experiments to determine the constant that converts
-        # TODO:   from wheel-degrees-spun to robot-degrees-turned.
-        # TODO:   Assume that the conversion is linear with respect to speed.
+        total = degrees*12
+        if duty_cycle_percent <0:
+            self.right_wheel.start_spinning(-(duty_cycle_percent))
+            while self.right_wheel.get_degrees_spun()<total:
+                time.sleep(0.001)
+            self.right_wheel.stop_spinning(stop_action)
+            self.right_wheel.reset_degrees_spun()
+        else:
+            self.left_wheel.start_spinning(duty_cycle_percent)
+            while self.left_wheel.get_degrees_spun()<total:
+                time.sleep(0.001)
+            self.left_wheel.stop_spinning(stop_action)
+            self.left_wheel.reset_degrees_spun()
+
+
+
+                
+        # DONE: Do a few experiments to determine the constant that converts
+        # DONE:   from wheel-degrees-spun to robot-degrees-turned.
+        # DONE:   Assume that the conversion is linear with respect to speed.
 
 
 class ArmAndClaw(object):
@@ -178,7 +206,7 @@ class ArmAndClaw(object):
 
 
 class TouchSensor(rb.TouchSensor):
-    """ Primary author of this class:  Hengqi Ye(Luis). """
+    """ Primary author of this class:  PUT_YOUR_NAME_HERE. """
 
     def __init__(self, port=ev3.INPUT_1):
         super().__init__(port)
@@ -186,23 +214,14 @@ class TouchSensor(rb.TouchSensor):
 
     def wait_until_pressed(self):
         """ Waits (doing nothing new) until the touch sensor is pressed. """
-        # TODO.
-        while True:
-            if self.get_value() == 1:
-                break
-            else:
-                time.sleep(0.001)
+        while self.get_value() == 0:
+            time.sleep(0.1)
+
 
 
     def wait_until_released(self):
         """ Waits (doing nothing new) until the touch sensor is released. """
         # TODO
-        while True:
-            if self.get_value() == 0:
-                break
-            else:
-                time.sleep(0.001)
-
 
 
 class Camera(object):
@@ -221,7 +240,10 @@ class ColorSensor(rb.ColorSensor):
         light intensity is less than the given value (threshold), which should
         be between 0 (no light reflected) and 100 (maximum light reflected).
         """
-        # TODO.
+
+        while self.get_reflected_intensity() >= reflected_light_intensity:
+            time.sleep(0.001)
+        print(self.get_reflected_intensity())
 
     def wait_until_intensity_is_greater_than(self, reflected_light_intensity):
         """
@@ -229,7 +251,9 @@ class ColorSensor(rb.ColorSensor):
         light intensity is greater than the given value (threshold), which
         should be between 0 (no light reflected) and 100 (max light reflected).
         """
-        # TODO.
+        while self.get_reflected_intensity() <= reflected_light_intensity:
+            time.sleep(0.001)
+        print(self.get_reflected_intensity())
 
     def wait_until_color_is(self, color):
         """
@@ -237,7 +261,9 @@ class ColorSensor(rb.ColorSensor):
         of what color it sees is the given color.
         The given color must be a Color (as defined above).
         """
-        # TODO.
+        while self.get_color() != color:
+            time.sleep(0.001)
+        print(self.get_color())
 
     def wait_until_color_is_one_of(self, colors):
         """
@@ -246,7 +272,15 @@ class ColorSensor(rb.ColorSensor):
         Each item in the sequence must be a Color (as defined above).
         """
         # TODO.
-
+        while True:
+            count = 0
+            for k in range(len(colors)):
+                if self.get_color() == colors[k]:
+                    count = 1
+                    break
+            if count != 0:
+                break
+        print(self.get_color())
 
 class InfraredSensorAsProximitySensor(object):
     """ Primary author of this class:  PUT_YOUR_NAME_HERE. """
