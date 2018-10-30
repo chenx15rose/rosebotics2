@@ -9,7 +9,6 @@ import time
 def test_color_go_line():
     robot = rb.Snatch3rRobot()
     middle_value = 50
-    t = 0.005
     intergral = 0
     delta = 0
     while True:
