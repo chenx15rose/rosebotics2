@@ -178,7 +178,7 @@ class ArmAndClaw(object):
 
 
 class TouchSensor(rb.TouchSensor):
-    """ Primary author of this class:  PUT_YOUR_NAME_HERE. """
+    """ Primary author of this class:  Hengqi Ye(Luis). """
 
     def __init__(self, port=ev3.INPUT_1):
         super().__init__(port)
@@ -198,7 +198,7 @@ class TouchSensor(rb.TouchSensor):
         """ Waits (doing nothing new) until the touch sensor is released. """
         # TODO
         while True:
-            if self.get_value() == 1:
+            if self.get_value() == 0:
                 break
             else:
                 time.sleep(0.001)
