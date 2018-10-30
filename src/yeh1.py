@@ -9,17 +9,24 @@ import time
 
 def main():
     """ Runs YOUR specific part of the project """
-    robot = rb.Snatch3rRobot()
-    count = 1
-    while True:
-        print("{:4}.".format(count),
-            "Touch sensor value is: ", robot.touch_sensor.get_value())
-        if robot.touch_sensor.get_value() == 0:
-            rb.DriveSystem.start_moving(100,100)
-            time.sleep(1)
+    test_wait_until_pressed()
+    test_wait_until_released()
 
-        count = count + 1
-        time.sleep(0.5)
+
+
+def test_wait_until_pressed():
+    robot = rb.Snatch3rRobot()
+    robot.drive_system.start_moving(50, 50)
+    robot.touch_sensor.wait_until_released()
+    robot.drive_system.stop_moving()
+
+def test_wait_until_released():
+    robot = rb.Snatch3rRobot()
+
+
+
+
+
 
 
 
