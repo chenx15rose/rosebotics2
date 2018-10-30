@@ -130,7 +130,6 @@ class DriveSystem(object):
         while math.fabs(self.left_wheel.get_degrees_spun())<=total:
             self.left_wheel.start_spinning(duty_cycle_percent)
             self.right_wheel.start_spinning(-(duty_cycle_percent))
-            time.sleep(0.001)
         self.left_wheel.stop_spinning(stop_action)
         self.right_wheel.stop_spinning(stop_action)
         self.left_wheel.reset_degrees_spun()

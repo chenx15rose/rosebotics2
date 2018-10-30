@@ -17,7 +17,7 @@ def main():
         robot.drive_system.go_straight_inches(m)
         robot.drive_system.spin_in_place_degrees((n-2)/n*180)
     robot.drive_system.stop_moving()
-    #2
+    # 2
     middle_value = 50
     t = 0.005
     intergral = 0
@@ -25,20 +25,18 @@ def main():
     while True:
         p_delta = delta
         delta = robot.color_sensor.get_reflected_intensity() - middle_value
-        if robot.color_sensor.get_reflected_intensity() <= middle_value+5 and robot.color_sensor.get_reflected_intensity()>=middle_value-5:
+        if robot.color_sensor.get_reflected_intensity() <= middle_value + 5 and robot.color_sensor.get_reflected_intensity() >= middle_value - 5:
             intergral = 0
-            robot.drive_system.start_moving(60,60)
-            time.sleep(t)
+            robot.drive_system.start_moving(60, 60)
         else:
             intergral += delta
-            speedleft = 50 - delta*0.6 + 0.03*intergral #+(delta-p_delta)*0.01
-            speedright = 50 + delta*0.6 + 0.03*intergral #+py(delta-p_delta)*0.01
-            robot.drive_system.start_moving(speedleft,speedright)
-            time.sleep(t)
-    #3
+            speedleft = 50 - delta * 0.6 + 0.03 * intergral  # +(delta-p_delta)*0.01
+            speedright = 50 + delta * 0.6 + 0.03 * intergral  # +py(delta-p_delta)*0.01
+            robot.drive_system.start_moving(speedleft, speedright)
+    # 3
     color = 5
     robot = rb.Snatch3rRobot()
-    robot.drive_system.start_moving(50,50)
+    robot.drive_system.start_moving(50, 50)
     robot.color_sensor.wait_until_color_is(color)
     robot.drive_system.stop_moving()
     print(robot.color_sensor.get_color())
