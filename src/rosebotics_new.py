@@ -5,7 +5,7 @@
   Team members:  PUT_YOUR_NAMES_HERE.
   Fall term, 2018-2019.
 """
-Harry Chen, Bert Gao, Luis Ye
+# Harry Chen, Bert Gao, Luis Ye
 # DONE: Put your names in the above.
 # TODO: Do the TODO's below.
 # TODO: Augment this module as appropriate, being sure to always
