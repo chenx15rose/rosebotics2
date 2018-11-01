@@ -3,9 +3,9 @@
   Fall term, 2018-2019.
 """
 
-import rosebotics as rb
+import rosebotics_new as rb
 import time
-
+import ev3dev as ev3
 def test_color_go_line():
     robot = rb.Snatch3rRobot()
     middle_value = 50
@@ -34,13 +34,14 @@ def test_color_wait_until_is():
     robot.drive_system.start_moving(50,50)
     robot.color_sensor.wait_until_color_is(3)
     robot.drive_system.stop_moving()
-
+def beep_when_near():
+    robot = rb.Snatch3rRobot()
+    while robot.proximity_sensor.get_distance_to_nearest_object_in_inches()>12:
+        time.sleep(0.001)
+    ev3.beep(0.5)
 
 def main():
 
     """ Runs YOUR specific part of the project """
-    test_color_go_line()
-    test_color_wait_until_intensity()
-    test_color_wait_until_is()
-
+    beep_when_near()
 main()

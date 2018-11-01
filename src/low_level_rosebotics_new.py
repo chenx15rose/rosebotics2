@@ -76,7 +76,7 @@ class Wheel(object):
 
 
 class TouchSensor(object):
-    def __init__(self, port):
+    def __init__(self, port=ev3.INPUT_1):
         """
         Constructs a TouchSensor at the given port,
         where  port  should be one of:
@@ -171,7 +171,7 @@ class ColorSensor(object):
 
 
 class InfraredSensor(object):
-    def __init__(self, port):
+    def __init__(self, port=ev3.INPUT_4):
         """
         Constructs an InfraredSensor at the given port,
         where  port  should be one of:
