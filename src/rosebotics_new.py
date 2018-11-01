@@ -149,10 +149,10 @@ class DriveSystem(object):
     """
     A class for driving (moving) the robot.
     Primary authors:  The ev3dev authors, David Mutchler, Dave Fisher,
-       their colleagues, the entire team, and PUT_YOUR_NAME_HERE.
+       their colleagues, the entire team, and Harry Chen.
     """
 
-    # TODO: In the above line, put the name of the primary author of this class.
+    # DONE: In the above line, put the name of the primary author of this class.
 
     def __init__(self,
                  left_wheel_port=ev3.OUTPUT_B,
@@ -212,12 +212,12 @@ class DriveSystem(object):
         at the given speed (-100 to 100, where negative means moving backward),
         stopping using the given StopAction (which defaults to BRAKE).
         """
-        # TODO: Use one of the Wheel object's   get_degrees_spun   method.
-        # TODO: Do a few experiments to determine the constant that converts
-        # TODO:   from wheel-DEGREES-spun to robot-INCHES-moved.
-        # TODO:   Assume that the conversion is linear with respect to speed.
-        # TODO: Don't forget that the Wheel object's position begins wherever
-        # TODO:   it last was, not necessarily 0.
+        # DONE: Use one of the Wheel object's   get_degrees_spun   method.
+        # DONE: Do a few experiments to determine the constant that converts
+        # DONE:   from wheel-DEGREES-spun to robot-INCHES-moved.
+        # DONE:   Assume that the conversion is linear with respect to speed.
+        # DONE: Don't forget that the Wheel object's position begins wherever
+        # DONE:   it last was, not necessarily 0.
 
         total = inches * 13
         self.start_moving(duty_cycle_percent, duty_cycle_percent)
@@ -236,12 +236,12 @@ class DriveSystem(object):
         "Spinning in place" means that both wheels spin at the same speed
         but in opposite directions.
         """
-        # TODO: Use one of the Wheel object's   get_degrees_spun   method.
-        # TODO: Do a few experiments to determine the constant that converts
-        # TODO:   from WHEEL-degrees-spun to ROBOT-degrees-spun.
-        # TODO:   Assume that the conversion is linear with respect to speed.
-        # TODO: Don't forget that the Wheel object's position begins wherever
-        # TODO:   it last was, not necessarily 0.
+        # DONE: Use one of the Wheel object's   get_degrees_spun   method.
+        # DONE: Do a few experiments to determine the constant that converts
+        # DONE:   from WHEEL-degrees-spun to ROBOT-degrees-spun.
+        # DONE:   Assume that the conversion is linear with respect to speed.
+        # DONE: Don't forget that the Wheel object's position begins wherever
+        # DONE:   it last was, not necessarily 0.
 
         total = degrees * 5
         self.left_wheel.reset_degrees_spun()
@@ -266,12 +266,12 @@ class DriveSystem(object):
         "Turning" means that both ONE wheel spins at the given speed and the
         other wheel does NOT spin.
         """
-        # TODO: Use the Wheel object's   get_degrees_spun   method.
-        # TODO: Do a few experiments to determine the constant that converts
-        # TODO:   from WHEEL-degrees-SPUN to ROBOT-degrees-TURNED.
-        # TODO:   Assume that the conversion is linear with respect to speed.
-        # TODO: Don't forget that the Wheel object's position begins wherever
-        # TODO:   it last was, not necessarily 0.
+        # DONE: Use the Wheel object's   get_degrees_spun   method.
+        # DONE: Do a few experiments to determine the constant that converts
+        # DONE:   from WHEEL-degrees-SPUN to ROBOT-degrees-TURNED.
+        # DONE:   Assume that the conversion is linear with respect to speed.
+        # DONE: Don't forget that the Wheel object's position begins wherever
+        # DONE:   it last was, not necessarily 0.
 
         total = degrees * 12
         if duty_cycle_percent < 0:
