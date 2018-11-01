@@ -425,7 +425,7 @@ class Camera(object):
         at: http://www.cmucam.org/projects/cmucam5/wiki/Teach_Pixy_an_object.
 
     Primary authors:  The ev3dev authors, David Mutchler, Dave Fisher,
-       their colleagues, the entire team, and PUT_YOUR_NAME_HERE.
+       their colleagues, the entire team, and Harry Chen.
     """
 
     def __init__(self, port=ev3.INPUT_3):
