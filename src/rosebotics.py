@@ -216,16 +216,21 @@ class TouchSensor(rb.TouchSensor):
 
     def wait_until_pressed(self):
         """ Waits (doing nothing new) until the touch sensor is pressed. """
-        while self.get_value() == 0:
-            time.sleep(0.1)
+        while True:
+            if self.get_value() == 1:
+                break
+            else:
+                time.sleep(0.1)
 
 
 
     def wait_until_released(self):
         """ Waits (doing nothing new) until the touch sensor is released. """
-        # DONE
-        while self.get_value() == 1:
-            time.sleep(0.1)
+        while True:
+            if self.get_value() == 0:
+                break
+            else:
+                time.sleep(0.1)
 
 
 class Camera(object):
@@ -275,7 +280,7 @@ class ColorSensor(rb.ColorSensor):
         of what color it sees is any one of the given sequence of colors.
         Each item in the sequence must be a Color (as defined above).
         """
-        # DONE.
+        # Done.
         while True:
             count = 0
             for k in range(len(colors)):
