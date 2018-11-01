@@ -5,7 +5,8 @@
   Team members:  PUT_YOUR_NAMES_HERE.
   Fall term, 2018-2019.
 """
-# TODO: Put your names in the above.
+Harry Chen, Bert Gao, Luis Ye
+# DONE: Put your names in the above.
 # TODO: Do the TODO's below.
 # TODO: Augment this module as appropriate, being sure to always
 # TODO:   ** coordinate with your teammates ** in doing so.
@@ -14,6 +15,7 @@ from ev3dev import ev3
 from enum import Enum
 import low_level_rosebotics_new as low_level_rb
 import time
+import math
 
 # ------------------------------------------------------------------------------
 # Global constants.  Reference them as (for example):  rb.BRAKE   rb.GREEN
@@ -217,6 +219,11 @@ class DriveSystem(object):
         # TODO: Don't forget that the Wheel object's position begins wherever
         # TODO:   it last was, not necessarily 0.
 
+        total = inches * 13
+        self.start_moving(duty_cycle_percent, duty_cycle_percent)
+        time.sleep(total / math.fabs(duty_cycle_percent))
+        self.stop_moving(stop_action)
+
     def spin_in_place_degrees(self,
                               degrees,
                               duty_cycle_percent=100,
@@ -235,6 +242,17 @@ class DriveSystem(object):
         # TODO:   Assume that the conversion is linear with respect to speed.
         # TODO: Don't forget that the Wheel object's position begins wherever
         # TODO:   it last was, not necessarily 0.
+
+        total = degrees * 5
+        self.left_wheel.reset_degrees_spun()
+        self.right_wheel.reset_degrees_spun()
+        while math.fabs(self.left_wheel.get_degrees_spun()) <= total:
+            self.left_wheel.start_spinning(duty_cycle_percent)
+            self.right_wheel.start_spinning(-(duty_cycle_percent))
+        self.left_wheel.stop_spinning(stop_action)
+        self.right_wheel.stop_spinning(stop_action)
+        self.left_wheel.reset_degrees_spun()
+        self.right_wheel.reset_degrees_spun()
 
     def turn_degrees(self,
                      degrees,
@@ -255,6 +273,20 @@ class DriveSystem(object):
         # TODO: Don't forget that the Wheel object's position begins wherever
         # TODO:   it last was, not necessarily 0.
 
+        total = degrees * 12
+        if duty_cycle_percent < 0:
+            self.right_wheel.start_spinning(-(duty_cycle_percent))
+            while self.right_wheel.get_degrees_spun() < total:
+                time.sleep(0.001)
+            self.right_wheel.stop_spinning(stop_action)
+            self.right_wheel.reset_degrees_spun()
+        else:
+            self.left_wheel.start_spinning(duty_cycle_percent)
+            while self.left_wheel.get_degrees_spun() < total:
+                time.sleep(0.001)
+            self.left_wheel.stop_spinning(stop_action)
+            self.left_wheel.reset_degrees_spun()
+
 
 class TouchSensor(low_level_rb.TouchSensor):
     """
@@ -272,11 +304,16 @@ class TouchSensor(low_level_rb.TouchSensor):
 
     def wait_until_pressed(self):
         """ Waits (doing nothing new) until the touch sensor is pressed. """
-        # TODO.
+        # DONE.
+
+        while self.get_value() == 0:
+            time.sleep(0.1)
 
     def wait_until_released(self):
         """ Waits (doing nothing new) until the touch sensor is released. """
-        # TODO
+        # DONE
+        while self.get_value() == 1:
+            time.sleep(0.1)
 
 
 class ColorSensor(low_level_rb.ColorSensor):
@@ -332,7 +369,10 @@ class ColorSensor(low_level_rb.ColorSensor):
         light intensity is less than the given value (threshold), which should
         be between 0 (no light reflected) and 100 (maximum light reflected).
         """
-        # TODO.
+        # DONE.
+        while self.get_reflected_intensity() >= reflected_light_intensity:
+            time.sleep(0.001)
+        print(self.get_reflected_intensity())
 
     def wait_until_intensity_is_greater_than(self, reflected_light_intensity):
         """
@@ -340,7 +380,10 @@ class ColorSensor(low_level_rb.ColorSensor):
         light intensity is greater than the given value (threshold), which
         should be between 0 (no light reflected) and 100 (max light reflected).
         """
-        # TODO.
+        # DONE.
+        while self.get_reflected_intensity() <= reflected_light_intensity:
+            time.sleep(0.001)
+        print(self.get_reflected_intensity())
 
     def wait_until_color_is(self, color):
         """
@@ -348,7 +391,10 @@ class ColorSensor(low_level_rb.ColorSensor):
         of what color it sees is the given color.
         The given color must be a Color (as defined above).
         """
-        # TODO.
+        # DONE.
+        while self.get_color() != color:
+            time.sleep(0.001)
+        print(self.get_color())
 
     def wait_until_color_is_one_of(self, colors):
         """
@@ -356,7 +402,16 @@ class ColorSensor(low_level_rb.ColorSensor):
         of what color it sees is any one of the given sequence of colors.
         Each item in the sequence must be a Color (as defined above).
         """
-        # TODO.
+        # DONE.
+        while True:
+            count = 0
+            for k in range(len(colors)):
+                if self.get_color() == colors[k]:
+                    count = 1
+                    break
+            if count != 0:
+                break
+        print(self.get_color())
 
 
 class Camera(object):
