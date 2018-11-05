@@ -428,7 +428,7 @@ class Camera(object):
        their colleagues, the entire team, and Harry Chen.
     """
 
-    def __init__(self, port=ev3.INPUT_3):
+    def __init__(self, port=ev3.INPUT_2):
         self.low_level_camera = ev3.Sensor(port, driver_name="pixy-lego")
         self.set_signature("SIG1")
 
@@ -474,7 +474,7 @@ class Blob(object):
         self.center = center
         self.width = width
         self.height = height
-        self.screen_limits = Point(320, 240)  # FIXME
+        self.screen_limits = Point(319, 199)  #
 
     def __repr__(self):
         return "center: ({:3d}, {:3d})  width, height: {:3d} {:3d}.".format(
