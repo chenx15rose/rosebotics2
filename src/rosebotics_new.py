@@ -139,7 +139,6 @@ class Snatch3rRobot(object):
         self.beacon_button_sensor = InfraredAsBeaconButtonSensor(channel=1)
 
         self.brick_button_sensor = BrickButtonSensor()
-
         self.drive_system = DriveSystem(left_wheel_port, right_wheel_port)
         self.arm = ArmAndClaw(self.touch_sensor, arm_port)
 
