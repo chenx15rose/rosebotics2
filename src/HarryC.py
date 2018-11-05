@@ -32,7 +32,7 @@ def test_turn(degree,dutypercent):
 def test_camera_beep():
     robot = rbn.Snatch3rRobot()
     while True:
-        if robot.camera.get_biggest_blob().get_area()<=300:
+        if robot.camera.get_biggest_blob().get_area()<=1000:
             ev3.Sound.beep()
             print(robot.camera.get_biggest_blob().get_area())
             time.sleep(0.001)
