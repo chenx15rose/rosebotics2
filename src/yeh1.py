@@ -9,9 +9,9 @@ import time
 
 def main():
     """ Runs YOUR specific part of the project """
-    test_wait_until_pressed()
-    #test_wait_until_released()
-    test_color_stop_by(5)
+    #test_wait_until_pressed()
+    test_wait_until_released()
+    #test_color_stop_by(5)
 
 
 def test_wait_until_pressed():
