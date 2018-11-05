@@ -5,7 +5,7 @@
 
 import rosebotics_new as rb
 import time
-import ev3dev as ev3
+from ev3dev import ev3
 def test_color_go_line():
     robot = rb.Snatch3rRobot()
     middle_value = 50
@@ -36,9 +36,12 @@ def test_color_wait_until_is():
     robot.drive_system.stop_moving()
 def beep_when_near():
     robot = rb.Snatch3rRobot()
-    while robot.proximity_sensor.get_distance_to_nearest_object_in_inches()>12:
-        time.sleep(0.001)
-    ev3.beep(0.5)
+    while True :
+        while robot.proximity_sensor.get_distance_to_nearest_object_in_inches()>12:
+            time.sleep(0.001)
+        ev3.Sound.beep(0.5)
+        ev3.Sound.play("/home/robot/csse120/assets/sounds/awesome_pcm.wav")
+
 
 def main():
 
