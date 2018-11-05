@@ -11,4 +11,9 @@ def main():
     """ Runs YOUR specific part of the project """
 
 
+while True:
+    self.motor.stop_spinning()
+    self.touch_sensor.wait_until_pressed()
+    self.motor.start_spinning(100)
+    self.touch_sensor.wait_until_released()
 main()

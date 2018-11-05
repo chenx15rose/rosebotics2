@@ -743,11 +743,12 @@ class ArmAndClaw(object):
         """
         # TODO: Do this as STEP 1 of implementing this class.
         self.motor.start_spinning(-100)
+        time.sleep(3)
 
         while True:
-            self.motor.stop_spinning()
-            self.touch_sensor.wait_until_pressed()
             self.motor.start_spinning(100)
+            self.touch_sensor.wait_until_pressed()
+            self.motor.stop_spinning()
             self.touch_sensor.wait_until_released()
 
 
