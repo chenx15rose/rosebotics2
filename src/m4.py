@@ -12,4 +12,9 @@ def main():
     robot = rb.Snatch3rRobot
 
 
+while True:
+    self.motor.stop_spinning()
+    self.touch_sensor.wait_until_pressed()
+    self.motor.start_spinning(100)
+    self.touch_sensor.wait_until_released()
 main()
