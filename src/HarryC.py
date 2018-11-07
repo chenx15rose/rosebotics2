@@ -16,11 +16,11 @@ import _json
 
 def main():
     """ Runs YOUR specific part of the project """
-    #test_go_straight_inches(30,-100)
+    test_go_straight_inches(30,-100)
     #test_spin(360,-100)
     #test_turn(180,-100)
     #test_camera_beep()
-    test_Brick_Button()
+    #test_Brick_Button()
     #test()
 
 def test_go_straight_inches(inch,speed):
