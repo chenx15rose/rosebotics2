@@ -5,11 +5,11 @@
 
 import rosebotics_even_newer as rb
 import time
-import rosebotics_new as rbn
 from ev3dev import ev3
 import tkinter
 from tkinter import ttk
 import mqtt_remote_method_calls
+import _json
 
 
 
@@ -36,10 +36,10 @@ def test_turn(degree,dutypercent):
 def Brick_Button_method():
     robot = rb.Snatch3rRobot()
     while True:
-        if robot.brick_button_sensor.is_top_button_pressed():
-            ev3.Sound.beep()
-        elif robot.brick_button_sensor.is_bottom_button_pressed():
-            ev3.Sound.beep().wait()
+        if robot.brick_button_sensor.is_top_button_pressed() is True:
+            ev3.Sound.beep().wait(0.5)
+        elif robot.brick_button_sensor.is_bottom_button_pressed() is True:
+            ev3.Sound.beep().wait(0.5)
             ev3.Sound.beep()
 
 def test_camera_beep():
@@ -52,14 +52,18 @@ def test_camera_beep():
         else:
             time.sleep(0.001)
 
+def pass_method_to_ev3():
+    client = mqtt_remote_method_calls.MqttClient()
+    client.connect_to_ev3()
+    time.sleep(1)
+    client.send_message("test_go_straight_inches",[30,-100])
+
 def test_Brick_Button():
     window = tkinter.Tk()
     frame = ttk.Frame(window,padding=200)
     frame.grid()
     button = ttk.Button(frame,text='Brick Button')
-    client = mqtt_remote_method_calls.MqttClient()
-    client.connect_to_ev3()
-    button['command']=lambda: client.send_message("Brick_Button_method")
+    button['command']=lambda: pass_method_to_ev3()
     button.grid()
     window.mainloop()
 
