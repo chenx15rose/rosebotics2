@@ -141,3 +141,18 @@ def run_test_color_sensor():
 
 
 main()
+
+
+def test_infrared_beacon():
+    window = tkinter.Tk()
+
+    frame = ttk.Frame(window, padding=50)
+    frame.grid()
+
+    client = mqtt_remote_method_calls.MqttClient()
+    client.connect_to_ev3()
+
+    button = ttk.Button(frame, text='Infrared Beacon')
+    button['command'] = lambda: run_test(client)
+    button.grid()
+    client.send_message("test_beacon")

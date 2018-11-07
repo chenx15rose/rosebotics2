@@ -52,6 +52,9 @@ def test_beacon():
     robot.drive_system.spin_in_place_degrees(180, -100)
     robot.drive_system.go_straight_inches(30, 100)
 
+def run_test(client):
+    client.send_message("test_beacon", [2])
+
 
 
 def test_infrared_beacon():
@@ -64,8 +67,10 @@ def test_infrared_beacon():
     client.connect_to_ev3()
 
     button = ttk.Button(frame, text='Infrared Beacon')
-    button['command'] = lambda: test_beacon()
+
+    button['command'] = lambda: run_test(client)
     button.grid()
+
 
     window.mainloop()
 

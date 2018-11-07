@@ -213,7 +213,7 @@ class DriveSystem(object):
         total = inches * 13
         self.start_moving(duty_cycle_percent, duty_cycle_percent)
         time.sleep(total / math.fabs(duty_cycle_percent))
-        self.stop_moving(stop_action.value)
+        self.stop_moving()
 
         # DONE: Use one of the Wheel object's   get_degrees_spun   method.
         # DONE: Do a few experiments to determine the constant that converts
@@ -240,8 +240,8 @@ class DriveSystem(object):
         while math.fabs(self.left_wheel.get_degrees_spun()) <= total:
             self.left_wheel.start_spinning(duty_cycle_percent)
             self.right_wheel.start_spinning(-(duty_cycle_percent))
-        self.left_wheel.stop_spinning(stop_action)
-        self.right_wheel.stop_spinning(stop_action)
+        self.left_wheel.stop_spinning()
+        self.right_wheel.stop_spinning()
         self.left_wheel.reset_degrees_spun()
         self.right_wheel.reset_degrees_spun()
 
