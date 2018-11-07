@@ -36,8 +36,7 @@ def main():
     my_delegate = MyDelegate()
     mqtt_client = com.MqttClient(my_delegate)
     mqtt_client.connect_to_pc()
-    while True:
-        time.sleep(1)
+    my_delegate.loop_forever()
 
 
 

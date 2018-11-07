@@ -61,12 +61,7 @@ def test_Brick_Button():
     button.grid()
     window.mainloop()
 
-def test():
-    client = mqtt_remote_method_calls.MqttClient()
-    client.connect_to_ev3()
-    time.sleep(1)
-    client.send_message("go_straight_inches",[30,-100])
-    time.sleep(4)
+
 
 
 
