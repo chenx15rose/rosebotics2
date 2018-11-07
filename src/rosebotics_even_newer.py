@@ -221,6 +221,10 @@ class DriveSystem(object):
         # TODO:   Assume that the conversion is linear with respect to speed.
         # TODO: Don't forget that the Wheel object's position begins wherever
         # TODO:   it last was, not necessarily 0.
+        total = inches * 13
+        self.start_moving(duty_cycle_percent, duty_cycle_percent)
+        time.sleep(total / math.fabs(duty_cycle_percent))
+        self.stop_moving(stop_action.value)
 
     def spin_in_place_degrees(self,
                               degrees,
@@ -251,6 +255,15 @@ class DriveSystem(object):
         # TODO:   Assume that the conversion is linear with respect to speed.
         # TODO: Don't forget that the Wheel object's position begins wherever
         # TODO:   it last was, not necessarily 0.
+        total = degrees * 5
+        self.left_wheel.reset_degrees_spun()
+        self.right_wheel.reset_degrees_spun()
+        while math.fabs(self.left_wheel.get_degrees_spun()) <= total:
+            self.left_wheel.start_spinning(duty_cycle_percent)
+            self.right_wheel.start_spinning(-(duty_cycle_percent))
+        self.stop_moving(stop_action.value)
+        self.left_wheel.reset_degrees_spun()
+        self.right_wheel.reset_degrees_spun()
 
     def turn_degrees(self,
                      degrees,
@@ -653,6 +666,9 @@ class InfraredAsBeaconButtonSensor(object):
 
     def is_bottom_blue_button_pressed(self):
         return self._underlying_ir_sensor.blue_down
+
+    def is_beacon_button_pressed(self):
+        return self._underlying_ir_sensor.beacon
 
 
 
