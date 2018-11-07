@@ -15,7 +15,6 @@ from enum import Enum
 import low_level_rosebotics_new as low_level_rb
 import time
 import math
-
 # ------------------------------------------------------------------------------
 # Global constants.  Reference them as (for example):  rb.BRAKE   rb.GREEN
 # ------------------------------------------------------------------------------
