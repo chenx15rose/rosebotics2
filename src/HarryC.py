@@ -13,6 +13,7 @@ import _json
 
 
 
+
 def main():
     """ Runs YOUR specific part of the project """
     #test_go_straight_inches(30,-100)
@@ -20,6 +21,7 @@ def main():
     #test_turn(180,-100)
     #test_camera_beep()
     test_Brick_Button()
+    #test()
 
 def test_go_straight_inches(inch,speed):
     robot = rb.Snatch3rRobot()
@@ -33,14 +35,6 @@ def test_turn(degree,dutypercent):
     robot = rb.Snatch3rRobot()
     robot.drive_system.turn_degrees(degree,dutypercent)
 
-def Brick_Button_method():
-    robot = rb.Snatch3rRobot()
-    while True:
-        if robot.brick_button_sensor.is_top_button_pressed() is True:
-            ev3.Sound.beep().wait(0.5)
-        elif robot.brick_button_sensor.is_bottom_button_pressed() is True:
-            ev3.Sound.beep().wait(0.5)
-            ev3.Sound.beep()
 
 def test_camera_beep():
     robot = rb.Snatch3rRobot()
@@ -56,7 +50,7 @@ def pass_method_to_ev3():
     client = mqtt_remote_method_calls.MqttClient()
     client.connect_to_ev3()
     time.sleep(1)
-    client.send_message("test_go_straight_inches",[30,-100])
+    client.send_message("Brick_Button_method")
 
 def test_Brick_Button():
     window = tkinter.Tk()
@@ -66,6 +60,13 @@ def test_Brick_Button():
     button['command']=lambda: pass_method_to_ev3()
     button.grid()
     window.mainloop()
+
+def test():
+    client = mqtt_remote_method_calls.MqttClient()
+    client.connect_to_ev3()
+    time.sleep(1)
+    client.send_message("go_straight_inches",[30,-100])
+    time.sleep(4)
 
 
 

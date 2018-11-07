@@ -213,14 +213,14 @@ class DriveSystem(object):
         total = inches * 13
         self.start_moving(duty_cycle_percent, duty_cycle_percent)
         time.sleep(total / math.fabs(duty_cycle_percent))
-        self.stop_moving(stop_action)
+        self.stop_moving(stop_action.value)
 
-        # TODO: Use one of the Wheel object's   get_degrees_spun   method.
-        # TODO: Do a few experiments to determine the constant that converts
-        # TODO:   from wheel-DEGREES-spun to robot-INCHES-moved.
-        # TODO:   Assume that the conversion is linear with respect to speed.
-        # TODO: Don't forget that the Wheel object's position begins wherever
-        # TODO:   it last was, not necessarily 0.
+        # DONE: Use one of the Wheel object's   get_degrees_spun   method.
+        # DONE: Do a few experiments to determine the constant that converts
+        # DONE:   from wheel-DEGREES-spun to robot-INCHES-moved.
+        # DONE:   Assume that the conversion is linear with respect to speed.
+        # DONE: Don't forget that the Wheel object's position begins wherever
+        # DONE:   it last was, not necessarily 0.
 
     def spin_in_place_degrees(self,
                               degrees,
@@ -245,12 +245,12 @@ class DriveSystem(object):
         self.left_wheel.reset_degrees_spun()
         self.right_wheel.reset_degrees_spun()
 
-        # TODO: Use one of the Wheel object's   get_degrees_spun   method.
-        # TODO: Do a few experiments to determine the constant that converts
-        # TODO:   from WHEEL-degrees-spun to ROBOT-degrees-spun.
-        # TODO:   Assume that the conversion is linear with respect to speed.
-        # TODO: Don't forget that the Wheel object's position begins wherever
-        # TODO:   it last was, not necessarily 0.
+        # DONE: Use one of the Wheel object's   get_degrees_spun   method.
+        # DONE: Do a few experiments to determine the constant that converts
+        # DONE:   from WHEEL-degrees-spun to ROBOT-degrees-spun.
+        # DONE:   Assume that the conversion is linear with respect to speed.
+        # DONE: Don't forget that the Wheel object's position begins wherever
+        # DONE:   it last was, not necessarily 0.
 
     def turn_degrees(self,
                      degrees,
@@ -278,12 +278,12 @@ class DriveSystem(object):
             self.left_wheel.stop_spinning(stop_action)
             self.left_wheel.reset_degrees_spun()
 
-        # TODO: Use the Wheel object's   get_degrees_spun   method.
-        # TODO: Do a few experiments to determine the constant that converts
-        # TODO:   from WHEEL-degrees-SPUN to ROBOT-degrees-TURNED.
-        # TODO:   Assume that the conversion is linear with respect to speed.
-        # TODO: Don't forget that the Wheel object's position begins wherever
-        # TODO:   it last was, not necessarily 0.
+        # DONE: Use the Wheel object's   get_degrees_spun   method.
+        # DONE: Do a few experiments to determine the constant that converts
+        # DONE:   from WHEEL-degrees-SPUN to ROBOT-degrees-TURNED.
+        # DONE:   Assume that the conversion is linear with respect to speed.
+        # DONE: Don't forget that the Wheel object's position begins wherever
+        # DONE:   it last was, not necessarily 0.
 
 
 class TouchSensor(low_level_rb.TouchSensor):
