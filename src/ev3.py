@@ -24,6 +24,12 @@ class MyDelegate(object):
                 ev3.Sound.beep().wait(0.5)
                 ev3.Sound.beep()
 
+    def Infraid_beacon(self):
+        while True:
+            if self.robot.beacon_button_sensor.is_top_blue_button_pressed() is True:
+                self.robot.drive_system.go_straight_inches(11,-50)
+            if self.robot.beacon_button_sensor.is_top_red_button_pressed() is True:
+                self.robot.drive_system.go_straight_inches(11,50)
     def loop_forever(self):
         btn = ev3.Button()
         while not btn.backspace:
