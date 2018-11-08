@@ -5,10 +5,10 @@ Mini-application:  Buttons on a Tkinter GUI tell the robot to:
 This module runs on your LAPTOP.
 It uses MQTT to SEND information to a program running on the ROBOT.
 
-Authors:  David Mutchler, his colleagues, and PUT_YOUR_NAME_HERE.
+Authors:  David Mutchler, his colleagues, and BERT.
 """
 # ------------------------------------------------------------------------------
-# TODO: 1. PUT YOUR NAME IN THE ABOVE LINE.  Then delete this TODO.
+# DONE: 1. PUT YOUR NAME IN THE ABOVE LINE.  Then delete this TODO.
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -47,22 +47,55 @@ Authors:  David Mutchler, his colleagues, and PUT_YOUR_NAME_HERE.
 import tkinter
 from tkinter import ttk
 import mqtt_remote_method_calls as com
-
+import time
 
 def main():
     """ Constructs and runs a GUI for this program. """
     root = tkinter.Tk()
-    setup_gui(root)
 
-    root.mainloop()
+    mqtt_client = com.MqttClient()
+    mqtt_client.connect_to_ev3()
+
+    #mqtt_client.send_message('beep_and_talk',['Hello.How are you?',200])
+
+    while True:
+        #setup_gui_difficult(root,mqtt_client)
+        setup_gui(root, mqtt_client)
+        root.mainloop()
+        time.sleep(0.01)
+
     # --------------------------------------------------------------------------
     # TODO: 5. Add code above that constructs a   com.MqttClient   that will
     # TODO:    be used to send commands to the robot.  Connect it to this pc.
     # TODO:    Test.  When OK, delete this TODO.
     # --------------------------------------------------------------------------
+def setup_gui_difficult(root_window,mqtt_client):
+    defaults_speak_words = speak_words()
+    frame = ttk.Frame(root_window, padding = 40)
+    frame.grid()
+    speak_string_box = ttk.Entry(frame)
+    speak_button = ttk.Button(frame, text = "set strings")
+    volume_box = ttk.Entry(frame)
+    volume_button = ttk.Button(frame, text = "set volume")
+    speak_string_box.grid()
+    speak_button.grid()
+    volume_box.grid()
+    volume_button.grid()
+    do_speak_button = ttk.Button(frame, text = "speak now")
+    do_speak_button.grid()
+    speak_button['command'] = (lambda : adjust_words(defaults_speak_words, speak_string_box.get()))
+    volume_button['command'] = (lambda : adjust_volume(defaults_speak_words, int(volume_box.get())))
+    do_speak_button['command'] = (lambda : mqtt_client.send_message('beep_and_talk',[defaults_speak_words.words,defaults_speak_words.volume]))
+def adjust_words(speak_object,new_words):
+    speak_object.words = new_words
+def adjust_volume(speak_object,new_volume):
+    speak_object.volume = new_volume
+class speak_words(object):
+    def __init__(self,volume = 100, words=''):
+        self.volume = volume
+        self.words = words
 
-
-def setup_gui(root_window):
+def setup_gui(root_window, mqtt_client):
     """ Constructs and sets up widgets on the given window. """
     frame = ttk.Frame(root_window, padding=10)
     frame.grid()
@@ -74,10 +107,10 @@ def setup_gui(root_window):
     go_forward_button.grid()
 
     go_forward_button['command'] = \
-        lambda: handle_go_forward()
+        lambda: handle_go_forward(speed_entry_box, mqtt_client)
 
 
-def handle_go_forward():
+def handle_go_forward(entry_box, mqtt_client):
     """
     Tells the robot to go forward at the speed specified in the given entry box.
     """
@@ -87,6 +120,9 @@ def handle_go_forward():
     # TODO:    necessary for the entry_box constructed in  setup_gui
     # TODO:    to make its way to this function.  When done, delete this TODO.
     # --------------------------------------------------------------------------
+    speed = entry_box.get()
+    print("Sending 'go_forward' to the robot, with a speed", speed)
+    mqtt_client.send_message("go_forward",[speed])
 
     # --------------------------------------------------------------------------
     # TODO: 7. For this function to tell the robot what to do, it needs

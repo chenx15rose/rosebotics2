@@ -42,7 +42,7 @@ def main():
     mqtt_client = com.MqttClient(my_delegate)
     mqtt_client.connect_to_pc()
     while True:
-        time.sleep(1)
+        time.sleep(0.01)
 
 
 
