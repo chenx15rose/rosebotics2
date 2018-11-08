@@ -69,9 +69,9 @@ class RemoteControlEtc(object):
         self.robot.drive_system.start_moving(speed, speed)
 
     def beep(self):
-        if self.robot.beacon_sensor.is_top_red_button_pressed():
+        if self.robot.beacon_button_sensor.is_top_red_button_pressed():
             ev3.Sound.beep().wait()
-        if self.robot.beacon_sensor.is_top_blue_button_pressed():
+        if self.robot.beacon_button_sensor.is_top_blue_button_pressed():
             ev3.Sound.speak("Hello. How are you?")
 
 
