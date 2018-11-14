@@ -97,17 +97,43 @@ class speak_words(object):
     def __init__(self,volume = 100, words=''):
         self.volume = volume
         self.words = words
+
 def setup_gui_final(root, mqtt_client,point,point_click):
     frame = ttk.Frame(root, padding = 30)
     frame.grid()
+    speed1 = Speed()
+    #canvas = tkinter.Canvas(frame,background = 'lightgray',height = 600,width = 800)
+    #canvas.grid()
+    #canvas.bind('<Button-1>', lambda event: left_mouse_click(event,point,point_click))
 
-    canvas = tkinter.Canvas(frame,background = 'lightgray',height = 600,width = 800)
-    canvas.grid()
-    canvas.bind('<Button-1>', lambda event: left_mouse_click(event,point,point_click))
-
-    button = ttk.Button(frame,text='send to ev3')
-    button.grid()
-    button['command'] = (lambda : set_final_to_ev3(point_click,mqtt_client))
+    #button = ttk.Button(frame,text='send to ev3')
+    #button.grid()
+    #button['command'] = (lambda : set_final_to_ev3(point_click,mqtt_client))
+    button1 = ttk.Button(frame, text= 'up')
+    button1.grid(row = 0, column =1)
+    button2 = ttk.Button(frame, text = 'down')
+    button2.grid(row = 1, column = 1)
+    button3 = ttk.Button(frame, text = 'left')
+    button3.grid(row = 1, column = 0)
+    button4 = ttk.Button(frame, text = 'right')
+    button4.grid(row = 1, column = 2)
+    entry = ttk.Entry(frame, text = 'down')
+    entry.grid(row = 2, column =1)
+    button5 = ttk.Button(frame, text = 'send initial velocity to ev3')
+    button5.grid(row =3, column = 1)
+    button1['command'] = (lambda : adjust_speed_up(speed1))
+class Speed(object):
+    def __init__(self):
+        self.left = 50
+        self.right = 50
+def adjust_speed_up(speed):
+    speed.left += 10
+    speed.right += 10
+def adjust_speed_down(speed):
+    speed.left = speed.left-10
+    speed.right = speed.right-10
+def adjust_speed_left(speed):
+    speed.left
 def left_mouse_click(event,point,point_click):
     if point.x == 0 and point.y == 0:
         pass
@@ -123,10 +149,20 @@ def set_final_to_ev3(point_click,mqtt_client):
     n = len(point_click)//2-1
     distance_list=[]
     angle_list = []
+    diagonal_distance_list = []
     for k in range(len(point_click)//2-1):
         distance = mt.sqrt((point_click[2*k]-point_click[2*(k+1)])**2 + (point_click[2*k+1]-point_click[2*(k+1)+1])**2)/30
         distance_list.append(distance)
-    mqtt_client.send_message('run_as_canvas',[distance_list,n])
+    print(distance_list)
+    for k in range(n-1):
+        diagonal_distance = mt.sqrt((point_click[2*k]-point_click[2*(k+2)])**2+(point_click[2*k+1]-point_click[2*(k+2)+1])**2)/30
+        diagonal_distance_list.append(diagonal_distance)
+    print(diagonal_distance_list)
+    #for k in range(len(distance_list)-1):
+    #    angle = mt.acos((distance_list[k]**2+distance_list[k+1]**2-diagonal_distance_list[k]**2)/(2*distance_list[k]*diagonal_distance_list[k+1]))
+    #    angle_list.append(180-angle*180/mt.pi)
+    #print(angle_list)
+    mqtt_client.send_message('run_as_canvas',[distance_list,n,1])
 class Point(object):
     def __init__(self):
         self.x = 0
@@ -145,7 +181,8 @@ def setup_gui(root_window, mqtt_client):
 
     go_forward_button['command'] = \
         lambda: handle_go_forward(speed_entry_box, mqtt_client)
-
+def print_content(content):
+    print(content)
 
 def handle_go_forward(entry_box, mqtt_client):
     """

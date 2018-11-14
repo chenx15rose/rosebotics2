@@ -140,7 +140,17 @@ class Snatch3rRobot(object):
 
         self.drive_system = DriveSystem(left_wheel_port, right_wheel_port)
         self.arm = ArmAndClaw(self.touch_sensor, arm_port)
-
+    def go_straight_in_inches_and_detect(self,inches,duty_cycle_percent=100):
+        k = 0
+        total = inches * 13
+        time_start = time.time()
+        while time.time()-time_start < total / math.fabs(duty_cycle_percent):
+            if self.color_sensor.get_color() == 6:
+                k=k+1
+                self.drive_system.start_moving(100,100)
+                time.sleep(0.3)
+            self.drive_system.start_moving(duty_cycle_percent, duty_cycle_percent)
+        self.drive_system.stop_moving()
 
 class DriveSystem(object):
     """

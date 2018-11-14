@@ -23,7 +23,7 @@ import rosebotics_even_newer as rb
 import time
 import mqtt_remote_method_calls as com
 import ev3dev.ev3 as ev3
-
+import math
 
 def main():
     # --------------------------------------------------------------------------
@@ -34,7 +34,7 @@ def main():
     rc = RemoteControlEtc(robot)
     mqtt_client = com.MqttClient(rc)
     mqtt_client.connect_to_pc()
-
+    mqtt_client.send_message('print_content',['j'])
     # --------------------------------------------------------------------------
     # TODO: 4. Add code that constructs a   com.MqttClient   that will
     # TODO:    be used to receive commands sent by the laptop.
@@ -72,7 +72,7 @@ class RemoteControlEtc(object):
         """
 
         self.robot = robot
-        self.mqtt_client = None
+        self.mqtt_client = com.MqttClient()
     def beep_and_talk(self,speak_string,volume):
             while True:
                 if self.robot.beacon_button_sensor.is_bottom_blue_button_pressed() is True:
@@ -101,11 +101,37 @@ class RemoteControlEtc(object):
             self.robot.drive_system.start_moving(50,-50)
         self.robot.drive_system.go_straight_inches(distance)
         self.robot.drive_system.stop_moving()
-    def run_as_canvas(self,distance_list,n):
-        for k in range(n):
-            self.robot.drive_system.go_straight_inches(distance_list[k])
-            ev3.Sound.beep(0.1)
+    def go_straight_in_inches_and_detect(self,inches,duty_cycle_percent=100):
+        total = inches * 13
+        time_start = time.time()
+        while time.time() < time_start:
+            if self.robot.color_sensor.get_color() == 6:
+                print('hello')
+            self.robot.drive_system.start_moving(duty_cycle_percent, duty_cycle_percent)
         self.robot.drive_system.stop_moving()
+    def run_as_canvas(self,distance_list,n,angle_list):
+        j= 0
+        for k in range(n):
+            i = self.robot.go_straight_in_inches_and_detect(distance_list[k])
+            j = j+k
+
+            #if k == n-3:
+            #    pass
+            #else:
+            #    if angle_list[k] >= 180:
+            #        self.robot.drive_system.spin_in_place_degrees(angle_list[k]-180,-50)
+            #        print(angle_list[k])
+            #    else:
+            #        self.robot.drive_system.spin_in_place_degrees(angle_list[k],-50)
+            #        print(angle_list[k])
+            #ev3.Sound.beep(0.1)
+        self.robot.drive_system.stop_moving()
+        print(j)
+        self.mqtt_client.send_message('print_content',[j])
+        while True:
+            time.sleep(0.01)
+    def final_go(self,left_speed,right_speed):
+        self.robot.drive_system.start_moving(left_speed,right_speed)
 
 
 
