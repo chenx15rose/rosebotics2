@@ -132,9 +132,9 @@ class Snatch3rRobot(object):
         self.color_sensor = ColorSensor(color_sensor_port)
         self.camera = Camera(camera_port)
 
-        self.proximity_sensor = InfraredAsProximitySensor(ir_sensor_port)
+        #self.proximity_sensor = InfraredAsProximitySensor(ir_sensor_port)
         self.beacon_sensor = InfraredAsBeaconSensor(channel=1)
-        self.beacon_button_sensor = InfraredAsBeaconButtonSensor(channel=1)
+        #self.beacon_button_sensor = InfraredAsBeaconButtonSensor(channel=1)
 
         self.brick_button_sensor = BrickButtonSensor()
 
@@ -268,13 +268,13 @@ class DriveSystem(object):
             self.right_wheel.start_spinning(-(duty_cycle_percent))
             while self.right_wheel.get_degrees_spun() < total:
                 time.sleep(0.001)
-            self.right_wheel.stop_spinning(stop_action)
+            self.right_wheel.stop_spinning()
             self.right_wheel.reset_degrees_spun()
         else:
             self.left_wheel.start_spinning(duty_cycle_percent)
             while self.left_wheel.get_degrees_spun() < total:
                 time.sleep(0.001)
-            self.left_wheel.stop_spinning(stop_action)
+            self.left_wheel.stop_spinning()
             self.left_wheel.reset_degrees_spun()
 
         # DONE: Use the Wheel object's   get_degrees_spun   method.
