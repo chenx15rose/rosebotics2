@@ -37,11 +37,11 @@ def test_color_wait_until_is():
     robot.drive_system.stop_moving()
 def beep_when_near():
     robot = rb.Snatch3rRobot()
-    while True :
-        if robot.proximity_sensor.get_distance_to_nearest_object_in_inches()>9 \
-            and robot.proximity_sensor.get_distance_to_nearest_object_in_inches()<15:
-            print(robot.proximity_sensor.get_distance_to_nearest_object_in_inches())
-            ev3.Sound.beep(0.5)
+    while True:
+        a = robot.proximity_sensor.get_distance_to_nearest_object_in_inches()
+        if a>15 and a<25:
+            print(a)
+            ev3.Sound.beep().wait()
             # ev3.Sound.play("/home/robot/csse120/assets/sounds/awesome_pcm.wav")
 
 
@@ -50,6 +50,6 @@ def beep_when_near():
 def main():
 
     """ Runs YOUR specific part of the project """
-    beep_when_near()
+    test_color_go_line()
 
 main()

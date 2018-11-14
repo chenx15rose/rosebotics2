@@ -55,12 +55,13 @@ def main():
 
     mqtt_client = com.MqttClient()
     mqtt_client.connect_to_ev3()
-
+    point = Point()
     #mqtt_client.send_message('beep_and_talk',['Hello.How are you?',200])
 
     while True:
         #setup_gui_difficult(root,mqtt_client)
-        setup_gui(root, mqtt_client)
+        #setup_gui(root, mqtt_client)
+        setup_gui_final(root,mqtt_client,point)
         root.mainloop()
         time.sleep(0.01)
 
@@ -94,6 +95,27 @@ class speak_words(object):
     def __init__(self,volume = 100, words=''):
         self.volume = volume
         self.words = words
+def setup_gui_final(root, mqtt_client,point):
+    frame = ttk.Frame(root, padding = 30)
+    frame.grid()
+
+    canvas = tkinter.Canvas(frame,background = 'lightgray',height = 2000,width = 1000)
+    canvas.grid()
+    canvas.bind('<Button-1>', lambda event: left_mouse_click(event,point))
+
+def left_mouse_click(event,point):
+    if point.x == 0 and point.y == 0:
+        pass
+    else:
+        canvas = event.widget
+        canvas.create_line(event.x, event.y,point.x,point.y)
+    point.x = event.x
+    point.y = event.y
+
+class Point(object):
+    def __init__(self):
+        self.x = 0
+        self.y = 0
 
 def setup_gui(root_window, mqtt_client):
     """ Constructs and sets up widgets on the given window. """
