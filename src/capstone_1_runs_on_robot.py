@@ -101,4 +101,13 @@ class RemoteControlEtc(object):
             self.robot.drive_system.start_moving(50,-50)
         self.robot.drive_system.go_straight_inches(distance)
         self.robot.drive_system.stop_moving()
+    def run_as_canvas(self,distance_list,n):
+        for k in range(n):
+            self.robot.drive_system.go_straight_inches(distance_list[k])
+            ev3.Sound.beep(0.1)
+        self.robot.drive_system.stop_moving()
+
+
+
+
 main()

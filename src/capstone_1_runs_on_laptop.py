@@ -48,6 +48,7 @@ import tkinter
 from tkinter import ttk
 import mqtt_remote_method_calls as com
 import time
+import math as mt
 
 def main():
     """ Constructs and runs a GUI for this program. """
@@ -56,12 +57,13 @@ def main():
     mqtt_client = com.MqttClient()
     mqtt_client.connect_to_ev3()
     point = Point()
+    point_click = []
     #mqtt_client.send_message('beep_and_talk',['Hello.How are you?',200])
 
     while True:
         #setup_gui_difficult(root,mqtt_client)
         #setup_gui(root, mqtt_client)
-        setup_gui_final(root,mqtt_client,point)
+        setup_gui_final(root,mqtt_client,point,point_click)
         root.mainloop()
         time.sleep(0.01)
 
@@ -95,15 +97,18 @@ class speak_words(object):
     def __init__(self,volume = 100, words=''):
         self.volume = volume
         self.words = words
-def setup_gui_final(root, mqtt_client,point):
+def setup_gui_final(root, mqtt_client,point,point_click):
     frame = ttk.Frame(root, padding = 30)
     frame.grid()
 
-    canvas = tkinter.Canvas(frame,background = 'lightgray',height = 2000,width = 1000)
+    canvas = tkinter.Canvas(frame,background = 'lightgray',height = 600,width = 800)
     canvas.grid()
-    canvas.bind('<Button-1>', lambda event: left_mouse_click(event,point))
+    canvas.bind('<Button-1>', lambda event: left_mouse_click(event,point,point_click))
 
-def left_mouse_click(event,point):
+    button = ttk.Button(frame,text='send to ev3')
+    button.grid()
+    button['command'] = (lambda : set_final_to_ev3(point_click,mqtt_client))
+def left_mouse_click(event,point,point_click):
     if point.x == 0 and point.y == 0:
         pass
     else:
@@ -111,7 +116,17 @@ def left_mouse_click(event,point):
         canvas.create_line(event.x, event.y,point.x,point.y)
     point.x = event.x
     point.y = event.y
-
+    point_click.append(event.x)
+    point_click.append(event.y)
+    print(point_click)
+def set_final_to_ev3(point_click,mqtt_client):
+    n = len(point_click)//2-1
+    distance_list=[]
+    angle_list = []
+    for k in range(len(point_click)//2-1):
+        distance = mt.sqrt((point_click[2*k]-point_click[2*(k+1)])**2 + (point_click[2*k+1]-point_click[2*(k+1)+1])**2)/30
+        distance_list.append(distance)
+    mqtt_client.send_message('run_as_canvas',[distance_list,n])
 class Point(object):
     def __init__(self):
         self.x = 0
