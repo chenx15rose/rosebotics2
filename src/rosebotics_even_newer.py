@@ -2,13 +2,13 @@
   Capstone Project.
   This module contains high-level, general-purpose methods for a Snatch3r robot.
 
-  Team members:  Harry Chen(Xiaolong Chen), .
+  Team members:  Harry Chen(Xiaolong Chen), Bert Gao, Luis Ye
   Fall term, 2018-2019.
 """
-# TODO: Put your names in the above.
-# TODO: Do the TODO's below.
-# TODO: Augment this module as appropriate, being sure to always
-# TODO:   ** coordinate with your teammates ** in doing so.
+# DONE: Put your names in the above.
+# DONE: Do the DONE's below.
+# DONE: Augment this module as appropriate, being sure to always
+# DONE:   ** coordinate with your teammates ** in doing so.
 
 from ev3dev import ev3
 from enum import Enum
@@ -278,13 +278,13 @@ class DriveSystem(object):
             self.right_wheel.start_spinning(-(duty_cycle_percent))
             while self.right_wheel.get_degrees_spun() < total:
                 time.sleep(0.001)
-            self.right_wheel.stop_spinning(stop_action)
+            self.right_wheel.stop_spinning()
             self.right_wheel.reset_degrees_spun()
         else:
             self.left_wheel.start_spinning(duty_cycle_percent)
             while self.left_wheel.get_degrees_spun() < total:
                 time.sleep(0.001)
-            self.left_wheel.stop_spinning(stop_action)
+            self.left_wheel.stop_spinning()
             self.left_wheel.reset_degrees_spun()
 
         # DONE: Use the Wheel object's   get_degrees_spun   method.
@@ -525,9 +525,9 @@ class InfraredAsProximitySensor(low_level_rb.InfraredSensor):
     A class for the infrared sensor when it is in the mode in which it
     measures distance to the nearest object that it sees.
     Primary authors:  The ev3dev authors, David Mutchler, Dave Fisher,
-       their colleagues, the entire team, and PUT_YOUR_NAME_HERE.
+       their colleagues, the entire team, and Bert Gao.
     """
-    # TODO: In the above line, put the name of the primary author of this class.
+    # DONE: In the above line, put the name of the primary author of this class.
 
     def __init__(self, ir_sensor_port):
         super().__init__(ir_sensor_port)
