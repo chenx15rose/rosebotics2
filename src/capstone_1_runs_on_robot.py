@@ -13,56 +13,49 @@ Authors:  David Mutchler, his colleagues, and BERT.
 # DONE: 1. PUT YOUR NAME IN THE ABOVE LINE.  Then delete this TODO.
 # ------------------------------------------------------------------------------
 
-# ------------------------------------------------------------------------------
-# TODO: 2. With your instructor, review the "big picture" of laptop-robot
-# TODO:    communication, per the comment in mqtt_sender.py.
-# TODO:    Once you understand the "big picture", delete this TODO.
-# ------------------------------------------------------------------------------
+
 
 import rosebotics_even_newer as rb
 import time
 import mqtt_remote_method_calls as com
 import ev3dev.ev3 as ev3
 import math
+#import capstone_1_runs_on_laptop as laptop
 
 def main():
-    # --------------------------------------------------------------------------
-    # TODO: 3. Construct a Snatch3rRobot.  Test.  When OK, delete this TODO.
-    # --------------------------------------------------------------------------
+
     robot = rb.Snatch3rRobot()
 
     rc = RemoteControlEtc(robot)
     mqtt_client = com.MqttClient(rc)
     mqtt_client.connect_to_pc()
-    mqtt_client.send_message('print_content',['j'])
-    # --------------------------------------------------------------------------
-    # TODO: 4. Add code that constructs a   com.MqttClient   that will
-    # TODO:    be used to receive commands sent by the laptop.
-    # TODO:    Connect it to this robot.  Test.  When OK, delete this TODO.
-    # --------------------------------------------------------------------------
 
-    # --------------------------------------------------------------------------
-    # TODO: 5. Add a class for your "delegate" object that will handle messages
-    # TODO:    sent from the laptop.  Construct an instance of the class and
-    # TODO:    pass it to the MqttClient constructor above.  Augment the class
-    # TODO:    as needed for that, and also to handle the go_forward message.
-    # TODO:    Test by PRINTING, then with robot.  When OK, delete this TODO.
-    # --------------------------------------------------------------------------
-
-    # --------------------------------------------------------------------------
-    # TODO: 6. With your instructor, discuss why the following WHILE loop,
-    # TODO:    that appears to do nothing, is necessary.
-    # TODO:    When you understand this, delete this TODO.
-    # --------------------------------------------------------------------------
-
-        # ----------------------------------------------------------------------
-        # TODO: 7. Add code that makes the robot beep if the top-red button
-        # TODO:    on the Beacon is pressed.  Add code that makes the robot
-        # TODO:    speak "Hello. How are you?" if the top-blue button on the
-        # TODO:    Beacon is pressed.  Test.  When done, delete this TODO.
-        # ----------------------------------------------------------------------
 
     while True:
+        if robot.color_sensor.get_color() == 6:
+            robot.drive_system.stop_moving()
+            ev3.Sound.set_volume(rc.volume)
+            ev3.Sound.speak(rc.words).wait()
+            time.sleep(1)
+            while robot.beacon_sensor.get_heading_to_beacon() < 0:
+                robot.drive_system.start_moving(-50, 50)
+            while robot.beacon_sensor.get_heading_to_beacon() > 0:
+                robot.drive_system.start_moving(50, -50)
+            robot.drive_system.left_wheel.reset_degrees_spun()
+            robot.drive_system.right_wheel.reset_degrees_spun()
+            while robot.beacon_sensor.get_distance_to_beacon() > 1:
+                robot.drive_system.start_moving(50, 50)
+            a = robot.drive_system.left_wheel.get_degrees_spun()
+            b = robot.drive_system.right_wheel.get_degrees_spun()
+            distance = (a + b) / 2
+            robot.drive_system.stop_moving()
+            ev3.Sound.speak('I reach the station').wait()
+            mqtt_client.send_message('set_distance',[distance])
+            break
+
+        else:
+            rc.go_as_go()
+
         time.sleep(0.01)  # For the delegate to do its work
 class RemoteControlEtc(object):
     def __init__(self, robot):
@@ -73,15 +66,18 @@ class RemoteControlEtc(object):
 
         self.robot = robot
         self.mqtt_client = com.MqttClient()
-    def beep_and_talk(self,speak_string,volume):
+        self.left_speed = 0
+        self.right_speed = 0
+        self.volume = 100
+        self.words = ''
+    def beep_and_talk(self):
             while True:
                 if self.robot.beacon_button_sensor.is_bottom_blue_button_pressed() is True:
                     break
                 if self.robot.beacon_button_sensor.is_top_red_button_pressed() is True:
                     ev3.Sound.beep(0.5)
                 if self.robot.beacon_button_sensor.is_top_blue_button_pressed() is True:
-                    ev3.Sound.set_volume(volume)
-                    ev3.Sound.speak(speak_string)
+                    ev3.Sound.speak('Hello. How are you?')
 
     def go_forward(self,speed_string):
         speed = int(speed_string)
@@ -93,45 +89,17 @@ class RemoteControlEtc(object):
                 self.robot.drive_system.go_straight_inches(5,-30)
             if self.robot.beacon_button_sensor.is_top_red_button_pressed() is True:
                 self.robot.drive_system.go_straight_inches(5,30)
-    def test_beacon(self, distance):
-        print('hello')
-        while self.robot.beacon_sensor.get_heading_to_beacon() < 0:
-            self.robot.drive_system.start_moving(-50,50)
-        while self.robot.beacon_sensor.get_heading_to_beacon() > 0:
-            self.robot.drive_system.start_moving(50,-50)
-        self.robot.drive_system.go_straight_inches(distance)
-        self.robot.drive_system.stop_moving()
-    def go_straight_in_inches_and_detect(self,inches,duty_cycle_percent=100):
-        total = inches * 13
-        time_start = time.time()
-        while time.time() < time_start:
-            if self.robot.color_sensor.get_color() == 6:
-                print('hello')
-            self.robot.drive_system.start_moving(duty_cycle_percent, duty_cycle_percent)
-        self.robot.drive_system.stop_moving()
-    def run_as_canvas(self,distance_list,n,angle_list):
-        j= 0
-        for k in range(n):
-            i = self.robot.go_straight_in_inches_and_detect(distance_list[k])
-            j = j+k
-
-            #if k == n-3:
-            #    pass
-            #else:
-            #    if angle_list[k] >= 180:
-            #        self.robot.drive_system.spin_in_place_degrees(angle_list[k]-180,-50)
-            #        print(angle_list[k])
-            #    else:
-            #        self.robot.drive_system.spin_in_place_degrees(angle_list[k],-50)
-            #        print(angle_list[k])
-            #ev3.Sound.beep(0.1)
-        self.robot.drive_system.stop_moving()
-        print(j)
-        self.mqtt_client.send_message('print_content',[j])
-        while True:
-            time.sleep(0.01)
     def final_go(self,left_speed,right_speed):
-        self.robot.drive_system.start_moving(left_speed,right_speed)
+       self.left_speed = left_speed
+       self.right_speed = right_speed
+    def go_as_go(self):
+        self.robot.drive_system.start_moving(self.left_speed,self.right_speed)
+    def set_volume(self,volume):
+        self.volume = volume
+    def set_words(self,words):
+        self.words = words
+
+
 
 
 

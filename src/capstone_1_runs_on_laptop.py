@@ -11,38 +11,6 @@ Authors:  David Mutchler, his colleagues, and BERT.
 # DONE: 1. PUT YOUR NAME IN THE ABOVE LINE.  Then delete this TODO.
 # ------------------------------------------------------------------------------
 
-# ------------------------------------------------------------------------------
-# TODO: 2. With your instructor, discuss the "big picture" of laptop-robot
-# TODO:    communication:
-# TODO:      - One program runs on your LAPTOP.  It displays a GUI.  When the
-# TODO:        user presses a button intended to make something happen on the
-# TODO:        ROBOT, the LAPTOP program sends a message to its MQTT client
-# TODO:        indicating what it wants the ROBOT to do, and the MQTT client
-# TODO:        SENDS that message TO a program running on the ROBOT.
-# TODO:
-# TODO:      - Another program runs on the ROBOT. It stays in a loop, responding
-# TODO:        to events on the ROBOT (like pressing buttons on the IR Beacon).
-# TODO:        It also, in the background, listens for messages TO the ROBOT
-# TODO:        FROM the program running on the LAPTOP.  When it hears such a
-# TODO:        message, it calls the method in the DELAGATE object's class
-# TODO:        that the message indicates, sending arguments per the message.
-# TODO:
-# TODO:  Once you understand the "big picture", delete this TODO (if you wish).
-# ------------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------------
-# TODO: 3. One team member: change the following in mqtt_remote_method_calls.py:
-#                LEGO_NUMBER = 99
-# TODO:    to use YOUR robot's number instead of 99.
-# TODO:    Commit and push the change, then other team members Update Project.
-# TODO:    Then delete this TODO.
-# ------------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------------
-# TODO: 4. Run this module.
-# TODO:    Study its code until you understand how the GUI is set up.
-# TODO:    Then delete this TODO.
-# ------------------------------------------------------------------------------
 
 import tkinter
 from tkinter import ttk
@@ -53,17 +21,16 @@ import math as mt
 def main():
     """ Constructs and runs a GUI for this program. """
     root = tkinter.Tk()
-
-    mqtt_client = com.MqttClient()
+    root.title('coal miner')
+    delegate =Delegate()
+    mqtt_client = com.MqttClient(delegate)
     mqtt_client.connect_to_ev3()
-    point = Point()
-    point_click = []
-    #mqtt_client.send_message('beep_and_talk',['Hello.How are you?',200])
+
 
     while True:
         #setup_gui_difficult(root,mqtt_client)
         #setup_gui(root, mqtt_client)
-        setup_gui_final(root,mqtt_client,point,point_click)
+        setup_gui_final(root,mqtt_client)
         root.mainloop()
         time.sleep(0.01)
 
@@ -72,43 +39,34 @@ def main():
     # TODO:    be used to send commands to the robot.  Connect it to this pc.
     # TODO:    Test.  When OK, delete this TODO.
     # --------------------------------------------------------------------------
+class Delegate(object):
+    def __init__(self):
+        self.mqtt_client = None
+        self.distance = 0
+    @staticmethod
+    def set_distance(distance):
+        print(distance)
+        if distance > 800:
+            print('This mine is too far away from station')
+        else:
+            print('This mine is near to the station')
+class Speed(object):
+    def __init__(self):
+        self.left = 50
+        self.right = 50
 def setup_gui_difficult(root_window,mqtt_client):
-    defaults_speak_words = speak_words()
     frame = ttk.Frame(root_window, padding = 40)
     frame.grid()
-    speak_string_box = ttk.Entry(frame)
-    speak_button = ttk.Button(frame, text = "set strings")
-    volume_box = ttk.Entry(frame)
-    volume_button = ttk.Button(frame, text = "set volume")
-    speak_string_box.grid()
-    speak_button.grid()
-    volume_box.grid()
-    volume_button.grid()
     do_speak_button = ttk.Button(frame, text = "speak now")
     do_speak_button.grid()
-    speak_button['command'] = (lambda : adjust_words(defaults_speak_words, speak_string_box.get()))
-    volume_button['command'] = (lambda : adjust_volume(defaults_speak_words, int(volume_box.get())))
-    do_speak_button['command'] = (lambda : mqtt_client.send_message('beep_and_talk',[defaults_speak_words.words,defaults_speak_words.volume]))
-def adjust_words(speak_object,new_words):
-    speak_object.words = new_words
-def adjust_volume(speak_object,new_volume):
-    speak_object.volume = new_volume
-class speak_words(object):
-    def __init__(self,volume = 100, words=''):
-        self.volume = volume
-        self.words = words
+    do_speak_button['command'] = (lambda : mqtt_client.send_message('beep_and_talk'))
 
-def setup_gui_final(root, mqtt_client,point,point_click):
+
+def setup_gui_final(root, mqtt_client):
     frame = ttk.Frame(root, padding = 30)
     frame.grid()
     speed1 = Speed()
-    #canvas = tkinter.Canvas(frame,background = 'lightgray',height = 600,width = 800)
-    #canvas.grid()
-    #canvas.bind('<Button-1>', lambda event: left_mouse_click(event,point,point_click))
 
-    #button = ttk.Button(frame,text='send to ev3')
-    #button.grid()
-    #button['command'] = (lambda : set_final_to_ev3(point_click,mqtt_client))
     button1 = ttk.Button(frame, text= 'up')
     button1.grid(row = 0, column =1)
     button2 = ttk.Button(frame, text = 'down')
@@ -121,52 +79,47 @@ def setup_gui_final(root, mqtt_client,point,point_click):
     entry.grid(row = 2, column =1)
     button5 = ttk.Button(frame, text = 'send initial velocity to ev3')
     button5.grid(row =3, column = 1)
-    button1['command'] = (lambda : adjust_speed_up(speed1))
-class Speed(object):
-    def __init__(self):
-        self.left = 50
-        self.right = 50
-def adjust_speed_up(speed):
+    button1['command'] = (lambda : adjust_speed_up(speed1,mqtt_client))
+    button2['command'] = (lambda : adjust_speed_down(speed1,mqtt_client))
+    button3['command'] = (lambda : adjust_speed_left(speed1,mqtt_client))
+    button4['command'] = (lambda : adjust_speed_right(speed1,mqtt_client))
+    button5['command'] = (lambda : set_speed(entry,speed1,mqtt_client))
+    speak_string_box = ttk.Entry(frame)
+    speak_button = ttk.Button(frame, text="set strings")
+    volume_box = ttk.Entry(frame)
+    volume_button = ttk.Button(frame, text="set volume")
+    speak_string_box.grid(column = 1)
+    speak_button.grid(column = 1)
+    volume_box.grid(column = 1)
+    volume_button.grid(column = 1)
+    volume_button['command'] = (lambda : mqtt_client.send_message('set_volume',[int(volume_box.get())]))
+    speak_button['command'] = (lambda : mqtt_client.send_message('set_words',[speak_string_box.get()]))
+
+
+def adjust_speed_up(speed, mqtt_client):
     speed.left += 10
     speed.right += 10
-def adjust_speed_down(speed):
+
+    mqtt_client.send_message('final_go', [speed.left, speed.right])
+def adjust_speed_down(speed, mqtt_client):
     speed.left = speed.left-10
     speed.right = speed.right-10
-def adjust_speed_left(speed):
-    speed.left
-def left_mouse_click(event,point,point_click):
-    if point.x == 0 and point.y == 0:
-        pass
-    else:
-        canvas = event.widget
-        canvas.create_line(event.x, event.y,point.x,point.y)
-    point.x = event.x
-    point.y = event.y
-    point_click.append(event.x)
-    point_click.append(event.y)
-    print(point_click)
-def set_final_to_ev3(point_click,mqtt_client):
-    n = len(point_click)//2-1
-    distance_list=[]
-    angle_list = []
-    diagonal_distance_list = []
-    for k in range(len(point_click)//2-1):
-        distance = mt.sqrt((point_click[2*k]-point_click[2*(k+1)])**2 + (point_click[2*k+1]-point_click[2*(k+1)+1])**2)/30
-        distance_list.append(distance)
-    print(distance_list)
-    for k in range(n-1):
-        diagonal_distance = mt.sqrt((point_click[2*k]-point_click[2*(k+2)])**2+(point_click[2*k+1]-point_click[2*(k+2)+1])**2)/30
-        diagonal_distance_list.append(diagonal_distance)
-    print(diagonal_distance_list)
-    #for k in range(len(distance_list)-1):
-    #    angle = mt.acos((distance_list[k]**2+distance_list[k+1]**2-diagonal_distance_list[k]**2)/(2*distance_list[k]*diagonal_distance_list[k+1]))
-    #    angle_list.append(180-angle*180/mt.pi)
-    #print(angle_list)
-    mqtt_client.send_message('run_as_canvas',[distance_list,n,1])
-class Point(object):
-    def __init__(self):
-        self.x = 0
-        self.y = 0
+    mqtt_client.send_message('final_go', [speed.left, speed.right])
+def adjust_speed_left(speed, mqtt_client):
+    speed.left = speed.left-5
+    speed.right = speed.right+5
+
+    mqtt_client.send_message('final_go', [speed.left, speed.right])
+def adjust_speed_right(speed, mqtt_client):
+    speed.left = speed.left +5
+    speed.right = speed.right -5
+    mqtt_client.send_message('final_go', [speed.left,speed.right])
+def set_speed(entry_box,speed,mqtt_client):
+    inispeed = int(entry_box.get())
+    speed.left = inispeed
+    speed.right = inispeed
+    mqtt_client.send_message('final_go', [speed.left, speed.right])
+
 
 def setup_gui(root_window, mqtt_client):
     """ Constructs and sets up widgets on the given window. """
@@ -181,43 +134,17 @@ def setup_gui(root_window, mqtt_client):
 
     go_forward_button['command'] = \
         lambda: handle_go_forward(speed_entry_box, mqtt_client)
-def print_content(content):
-    print(content)
+
+
 
 def handle_go_forward(entry_box, mqtt_client):
     """
     Tells the robot to go forward at the speed specified in the given entry box.
     """
-    # --------------------------------------------------------------------------
-    # TODO: 6. This function needs the entry box in which the user enters
-    # TODO:    the speed at which the robot should move.  Make the 2 changes
-    # TODO:    necessary for the entry_box constructed in  setup_gui
-    # TODO:    to make its way to this function.  When done, delete this TODO.
-    # --------------------------------------------------------------------------
+
     speed = entry_box.get()
     print("Sending 'go_forward' to the robot, with a speed", speed)
     mqtt_client.send_message("go_forward",[speed])
-
-    # --------------------------------------------------------------------------
-    # TODO: 7. For this function to tell the robot what to do, it needs
-    # TODO:    the MQTT client constructed in main.  Make the 4 changes
-    # TODO:    necessary for that object to make its way to this function.
-    # TODO:    When done, delete this TODO.
-    # --------------------------------------------------------------------------
-
-    # --------------------------------------------------------------------------
-    # TODO: 8. Add the single line of code needed to get the string that is
-    # TODO:    currently in the entry box.
-    # TODO:
-    # TODO:    Then add the single line of code needed to "call" a method on the
-    # TODO:    LISTENER that runs on the ROBOT, where that LISTENER is the
-    # TODO:    "delegate" object that is constructed when the ROBOT's code
-    # TODO:    runs on the ROBOT.  Send to the delegate the speed to use
-    # TODO:    plus a method name that you will implement in the DELEGATE's
-    # TODO:    class in the module that runs on the ROBOT.
-    # TODO:
-    # TODO:    Test by using a PRINT statement.  When done, delete this TODO.
-    # --------------------------------------------------------------------------
 
 
 main()
